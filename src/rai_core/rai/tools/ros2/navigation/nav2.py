@@ -144,7 +144,12 @@ class GetNavigateToPoseResultTool(BaseROS2Tool):
         global current_result
         if current_result is None:
             return "Action is not done yet"
-        return str(current_result.result().result)
+            
+        # -- Added ------------------------------------------------------------
+        return str(current_result.result().status)
+       	# -- Eliminated -------------------------------------------------------
+        # return str(current_result.result().result)
+		# ---------------------------------------------------------------------
 
 
 class CancelNavigateToPoseTool(BaseROS2Tool):
