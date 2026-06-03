@@ -86,6 +86,20 @@ class NavigateToPoseTool(BaseROS2Tool):
         current_result = result
 
     def _run(self, x: float, y: float, z: float, yaw: float) -> str:
+        # -- Added ------------------------------------------------------------
+        # Reset shared module-level state from any previous navigation so
+        # GetNavigateToPoseResultTool / GetNavigateToPoseFeedbackTool don't
+        # return stale values for the new goal. Without this reset,
+        # 'current_result' keeps the previous mission's terminal status
+        # forever and the result tool short-circuits on the first read after
+        # a new goal is sent. The on_feedback / on_done callbacks repopulate
+        # these globals as the new action progresses.
+        global current_action_id, current_feedback, current_result
+        current_action_id = None
+        current_feedback = None
+        current_result = None
+        # ---------------------------------------------------------------------
+        
         pose = PoseStamped()
         pose.header.frame_id = self.frame_id
         pose.header.stamp = self.connector.node.get_clock().now().to_msg()
@@ -121,7 +135,9 @@ class NavigateToPoseTool(BaseROS2Tool):
             on_feedback=self.on_feedback,
             on_done=self.on_done,
         )
-        global current_action_id
+        # -- Eliminated -------------------------------------------------------
+        # global current_action_id
+        # ---------------------------------------------------------------------
         current_action_id = action_id
 
         return "Navigating to pose"
@@ -149,7 +165,7 @@ class GetNavigateToPoseResultTool(BaseROS2Tool):
         return str(current_result.result().status)
        	# -- Eliminated -------------------------------------------------------
         # return str(current_result.result().result)
-		# ---------------------------------------------------------------------
+	# ---------------------------------------------------------------------
 
 
 class CancelNavigateToPoseTool(BaseROS2Tool):
