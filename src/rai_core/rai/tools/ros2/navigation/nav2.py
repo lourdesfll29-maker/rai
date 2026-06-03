@@ -11,6 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# ---------------------------------------------------------------------------
+# Modifications Copyright (C) 2025-2026 LARIC
+# (Trabajo Fin de Grado, ETSINF, Universitat Politècnica de València).
+#
+# This file has been modified from the upstream RAI version. Changes:
+#
+#   - GetNavigateToPoseResultTool._run: return
+#     'str(current_result.result().status)' instead of
+#     'str(current_result.result().result)', so the tool reports the
+#     GoalStatus integer (4=SUCCEEDED, 5=CANCELED, 6=ABORTED) that the
+#     LARIC agent compares against, instead of the empty NavigateToPose
+#     Result message.
+#
+#   - NavigateToPoseTool._run (2026-06-03): reset the module-level globals
+#     'current_action_id', 'current_feedback' and 'current_result' to None
+#     at the start of every call. Without this reset the result tool keeps
+#     returning the previous mission's terminal status forever after the
+#     first navigation, because the upstream code only repopulates these
+#     globals from inside the on_feedback / on_done callbacks of the new
+#     goal and never clears the stale ones.
+# ---------------------------------------------------------------------------
 
 import base64
 import time
