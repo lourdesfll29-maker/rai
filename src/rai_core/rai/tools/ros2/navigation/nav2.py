@@ -187,7 +187,7 @@ class GetNavigateToPoseResultTool(BaseROS2Tool):
         return str(current_result.result().status)
        	# -- Eliminated -------------------------------------------------------
         # return str(current_result.result().result)
-	# ---------------------------------------------------------------------
+		# ---------------------------------------------------------------------
 
 
 class CancelNavigateToPoseTool(BaseROS2Tool):
